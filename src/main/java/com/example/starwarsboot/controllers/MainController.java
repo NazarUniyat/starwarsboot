@@ -1,9 +1,9 @@
 package com.example.starwarsboot.controllers;
 
-import com.example.starwarsboot.Service.BMIResponseService;
-import com.example.starwarsboot.Service.CharacterService;
+import com.example.starwarsboot.Service.PairServiceImpl;
+import com.example.starwarsboot.Service.CharacterServiceImpl;
 import com.example.starwarsboot.component.CharactersMapper;
-import com.example.starwarsboot.domains.BMIResultModel;
+import com.example.starwarsboot.domains.ResultPairModel;
 import com.example.starwarsboot.repo.BMIResultModelRepository;
 import com.example.starwarsboot.repo.CharacterModelRepository;
 import com.example.starwarsboot.wires.PaginationWire;
@@ -27,28 +27,26 @@ public class MainController {
 
     private CharacterModelRepository characterModelRepository;
     private BMIResultModelRepository BMIResultModelRepository;
-    private CharacterService characterService;
+    private CharacterServiceImpl characterServiceImpl;
     private CharactersMapper charactersMappers;
-    private BMIResponseService bmiResponseService;
-    private String pageURL;
+    private PairServiceImpl pairServiceImpl;
 
     @Autowired
-    public MainController(CharacterModelRepository characterModelRepository, com.example.starwarsboot.repo.BMIResultModelRepository BMIResultModelRepository, CharacterService characterService, CharactersMapper charactersMappers, BMIResponseService bmiResponseService, String pageURL) {
+    public MainController(CharacterModelRepository characterModelRepository, com.example.starwarsboot.repo.BMIResultModelRepository BMIResultModelRepository, CharacterServiceImpl characterServiceImpl, CharactersMapper charactersMappers, PairServiceImpl pairServiceImpl) {
         this.characterModelRepository = characterModelRepository;
         this.BMIResultModelRepository = BMIResultModelRepository;
-        this.characterService = characterService;
+        this.characterServiceImpl = characterServiceImpl;
         this.charactersMappers = charactersMappers;
-        this.bmiResponseService = bmiResponseService;
-        this.pageURL = pageURL;
+        this.pairServiceImpl = pairServiceImpl;
     }
 
     @PostMapping("/add/{person1}/{person2}")
     @ResponseBody
-    public ResponseEntity<List<BMIResultModel>> test(
+    public ResponseEntity<List<ResultPairModel>> test(
             @PathVariable @Size(max = 25, message = "too long name in 1st param!") String person1,
             @PathVariable @Size(max = 25, message = "too long name in second param!") String person2
     ) {
-        characterService.savePerson(person1, person2);
+        characterServiceImpl.savePerson(person1, person2);
 
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(BMIResultModelRepository.findAll());
     }
@@ -58,7 +56,7 @@ public class MainController {
     public ResponseEntity<ResultResponseWire> returnResultOfCalculation(
             @PathVariable UUID uuid
     ){
-        return ResponseEntity.ok().body(bmiResponseService.resultModel(uuid));
+        return ResponseEntity.ok().body(pairServiceImpl.getComparedPair(uuid));
     }
 
     @GetMapping("/all")
@@ -78,7 +76,7 @@ public class MainController {
     public ResponseEntity<PaginationWire> getAllResults(
             @PageableDefault(value = 3) Pageable pageable
     ){
-        return ResponseEntity.ok().body(characterService.getAll(pageable));
+        return ResponseEntity.ok().body(characterServiceImpl.getAll(pageable));
     }
 
 

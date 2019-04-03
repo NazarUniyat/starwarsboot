@@ -1,7 +1,7 @@
 package com.example.starwarsboot.Service;
 
 import com.example.starwarsboot.Utils.BMIUtil;
-import com.example.starwarsboot.domains.BMIResultModel;
+import com.example.starwarsboot.domains.ResultPairModel;
 import com.example.starwarsboot.domains.CharacterModel;
 import com.example.starwarsboot.exceptions.NoSuchUUIDException;
 import com.example.starwarsboot.exceptions.UnknownPeronBodyParametersException;
@@ -16,21 +16,21 @@ import java.util.UUID;
 import static java.lang.Integer.valueOf;
 
 @Service
-public class BMIResponseService {
+public class PairServiceImpl implements PairService{
 
 
     private BMIResultModelRepository bmiResultModelRepository;
     private BMIUtil bmiUtil;
 
     @Autowired
-    public BMIResponseService(BMIResultModelRepository bmiResultModelRepository, BMIUtil bmiUtil) {
+    public PairServiceImpl(BMIResultModelRepository bmiResultModelRepository, BMIUtil bmiUtil) {
         this.bmiResultModelRepository = bmiResultModelRepository;
         this.bmiUtil = bmiUtil;
     }
 
-    private BMIResultModel getResultFromDB(CharacterModel characterModel1, CharacterModel characterModel2) {
-        BMIResultModel firstCombination = bmiResultModelRepository.findByFirstAndSecondPerson(characterModel1.getName(), characterModel2.getName());
-        BMIResultModel secondCombination = bmiResultModelRepository.findByFirstAndSecondPerson(characterModel2.getName(), characterModel1.getName());
+    public ResultPairModel getResultFromDB(CharacterModel characterModel1, CharacterModel characterModel2) {
+        ResultPairModel firstCombination = bmiResultModelRepository.findByFirstAndSecondPerson(characterModel1.getName(), characterModel2.getName());
+        ResultPairModel secondCombination = bmiResultModelRepository.findByFirstAndSecondPerson(characterModel2.getName(), characterModel1.getName());
         if (firstCombination != null) {
             return firstCombination;
         } else if (secondCombination != null) {
@@ -39,25 +39,29 @@ public class BMIResponseService {
         return null;
     }
 
-    public UUID calculateBMIForSavedPerson(CharacterModel characterModel1, CharacterModel characterModel2) {
+    public Double calculateBMIResult(CharacterModel model){
+        return (double) valueOf(model.getMass()) / Math.pow(Double.valueOf(model.getHeight()) / 100, 2);
+    }
 
-        BMIResultModel BMIResultModel = getResultFromDB(characterModel1, characterModel2);
+    public UUID createPair(CharacterModel characterModel1, CharacterModel characterModel2) {
 
-        if (BMIResultModel != null) {
+        ResultPairModel ResultPairModel = getResultFromDB(characterModel1, characterModel2);
+
+        if (ResultPairModel != null) {
             System.out.println("CALCULATION RESULT FROM DB");
-            return BMIResultModel.getUuid();
+            return ResultPairModel.getUuid();
         }
 
         double BMIPerson1;
         double BMIPerson2;
         try {
-            BMIPerson1 = (double) valueOf(characterModel1.getMass()) / Math.pow(Double.valueOf(characterModel1.getHeight()) / 100, 2);
-            BMIPerson2 = (double) valueOf(characterModel2.getMass()) / Math.pow(Double.valueOf(characterModel2.getHeight()) / 100, 2);
+            BMIPerson1 = calculateBMIResult(characterModel1);
+            BMIPerson2 = calculateBMIResult(characterModel2);
         } catch (NumberFormatException e) {
             throw new UnknownPeronBodyParametersException();
         }
 
-        BMIResultModel = new BMIResultModel(
+        ResultPairModel = new ResultPairModel(
                 characterModel1.getName(),
                 characterModel1.getMass(),
                 characterModel1.getHeight(),
@@ -67,16 +71,16 @@ public class BMIResponseService {
                 characterModel2.getHeight(),
                 BMIPerson2);
 
-        bmiResultModelRepository.save(BMIResultModel);
+        bmiResultModelRepository.save(ResultPairModel);
         System.out.println("CALCULATED RESULT NOT FROM DB, JUST SAVED");
-        return BMIResultModel.getUuid();
+        return ResultPairModel.getUuid();
     }
 
-    public ResultResponseWire resultModel(UUID uuid) {
+    public ResultResponseWire getComparedPair(UUID uuid) {
 
-        BMIResultModel BMIResultModel;
+        ResultPairModel ResultPairModel;
         try {
-            BMIResultModel = bmiResultModelRepository.findById(uuid).get();
+            ResultPairModel = bmiResultModelRepository.findById(uuid).get();
         } catch (NoSuchElementException e) {
             throw new NoSuchUUIDException();
         }
@@ -84,29 +88,29 @@ public class BMIResponseService {
         ResultResponseWire resultResponseWire = new ResultResponseWire();
 
         resultResponseWire.setFirstPersonData(
-                BMIResultModel.getPerson1() +
+                ResultPairModel.getPerson1() +
                         " has mass - " +
-                        BMIResultModel.getWeightPerson1() +
+                        ResultPairModel.getWeightPerson1() +
                         " and height - " +
-                        BMIResultModel.getHeightPerson1() +
+                        ResultPairModel.getHeightPerson1() +
                         " and BMI " +
-                        BMIResultModel.getBMIPerson1() +
+                        ResultPairModel.getBMIPerson1() +
                         " is " +
-                        bmiUtil.calculateBmiResult(BMIResultModel.getBMIPerson1())
+                        bmiUtil.calculateBmiResult(ResultPairModel.getBMIPerson1())
         );
         resultResponseWire.setSecondPersonData(
-                BMIResultModel.getPerson2() +
+                ResultPairModel.getPerson2() +
                         " has mass - " +
-                        BMIResultModel.getWeightPerson2() +
+                        ResultPairModel.getWeightPerson2() +
                         " and height - " +
-                        BMIResultModel.getHeightPerson2() +
+                        ResultPairModel.getHeightPerson2() +
                         " and BMI " +
-                        BMIResultModel.getBMIPerson2() +
+                        ResultPairModel.getBMIPerson2() +
                         " is " +
-                        bmiUtil.calculateBmiResult(BMIResultModel.getBMIPerson2())
+                        bmiUtil.calculateBmiResult(ResultPairModel.getBMIPerson2())
         );
 
-        resultResponseWire.setBmi(bmiUtil.compareBmiResults(BMIResultModel));
+        resultResponseWire.setBmi(bmiUtil.compareBmiResults(ResultPairModel));
 
         return resultResponseWire;
     }

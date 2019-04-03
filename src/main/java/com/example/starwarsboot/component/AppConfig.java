@@ -11,14 +11,14 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @PropertySource("classpath:application.properties")
 public class AppConfig {
 
-    @Value("${pagination.link}")
-    private String next;
-
-
-    @Bean
-    public String pageURL(){
-        return this.next;
-    }
+//    @Value("${pagination.link}")
+//    private String next;
+//
+//
+//    @Bean
+//    public String pageURL(){
+//        return this.next;
+//    }
 
     @Bean
     public CharactersMapper charactersMappers(){

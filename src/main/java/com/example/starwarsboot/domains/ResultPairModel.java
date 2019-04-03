@@ -12,7 +12,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Getter
 @Setter
-public class BMIResultModel {
+public class ResultPairModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -34,7 +34,7 @@ public class BMIResultModel {
     @Column
     private Double BMIPerson2;
 
-    public BMIResultModel(String person1, String weightPerson1, String heightPerson1, Double BMIPerson1, String person2, String weightPerson2, String heightPerson2, Double BMIPerson2) {
+    public ResultPairModel(String person1, String weightPerson1, String heightPerson1, Double BMIPerson1, String person2, String weightPerson2, String heightPerson2, Double BMIPerson2) {
         this.person1 = person1;
         this.weightPerson1 = weightPerson1;
         this.heightPerson1 = heightPerson1;
