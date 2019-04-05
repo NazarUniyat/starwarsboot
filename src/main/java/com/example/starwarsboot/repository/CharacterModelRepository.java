@@ -1,4 +1,4 @@
-package com.example.starwarsboot.repo;
+package com.example.starwarsboot.repository;
 
 import com.example.starwarsboot.domains.CharacterModel;
 import org.springframework.data.domain.Pageable;
@@ -13,10 +13,10 @@ import java.util.UUID;
 @Repository
 public interface CharacterModelRepository extends CrudRepository<CharacterModel, UUID> {
 
-    @Query("from CharacterModel order by name desc")
-    List<CharacterModel> findAllByName(Pageable pageable);
+    @Query("from CharacterModel order by name asc")
+    List<CharacterModel> findAllOrderByName(Pageable pageable);
 
 
     @Query("select p from CharacterModel p where p.name=:name")
-    CharacterModel findByPersonName(@Param("name") String name);
+    CharacterModel FindByPersonName(@Param("name") String name);
 }

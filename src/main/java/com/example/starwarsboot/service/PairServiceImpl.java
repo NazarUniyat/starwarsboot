@@ -1,36 +1,44 @@
-package com.example.starwarsboot.Service;
+package com.example.starwarsboot.service;
 
-import com.example.starwarsboot.Utils.BMIUtil;
+import com.example.starwarsboot.utils.BMIUtil;
+import com.example.starwarsboot.utils.PaginationUtil;
 import com.example.starwarsboot.domains.ResultPairModel;
 import com.example.starwarsboot.domains.CharacterModel;
 import com.example.starwarsboot.exceptions.NoSuchUUIDException;
 import com.example.starwarsboot.exceptions.UnknownPeronBodyParametersException;
-import com.example.starwarsboot.repo.BMIResultModelRepository;
+import com.example.starwarsboot.repository.ResultPairModelRepository;
+import com.example.starwarsboot.wires.PaginationWire;
 import com.example.starwarsboot.wires.ResultResponseWire;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
-
-import static java.lang.Integer.valueOf;
 
 @Service
 public class PairServiceImpl implements PairService{
 
+    private static Logger log = LogManager.getLogger(PairServiceImpl.class);
 
-    private BMIResultModelRepository bmiResultModelRepository;
+    private ResultPairModelRepository resultPairModelRepository;
     private BMIUtil bmiUtil;
+    @Value("${results.pagination.link}")
+    private String pageURl;
 
     @Autowired
-    public PairServiceImpl(BMIResultModelRepository bmiResultModelRepository, BMIUtil bmiUtil) {
-        this.bmiResultModelRepository = bmiResultModelRepository;
+    public PairServiceImpl(ResultPairModelRepository resultPairModelRepository, BMIUtil bmiUtil) {
+        this.resultPairModelRepository = resultPairModelRepository;
         this.bmiUtil = bmiUtil;
     }
 
     public ResultPairModel getResultFromDB(CharacterModel characterModel1, CharacterModel characterModel2) {
-        ResultPairModel firstCombination = bmiResultModelRepository.findByFirstAndSecondPerson(characterModel1.getName(), characterModel2.getName());
-        ResultPairModel secondCombination = bmiResultModelRepository.findByFirstAndSecondPerson(characterModel2.getName(), characterModel1.getName());
+        ResultPairModel firstCombination = resultPairModelRepository.findByFirstAndSecondPerson(characterModel1.getName(), characterModel2.getName());
+        ResultPairModel secondCombination = resultPairModelRepository.findByFirstAndSecondPerson(characterModel2.getName(), characterModel1.getName());
         if (firstCombination != null) {
             return firstCombination;
         } else if (secondCombination != null) {
@@ -39,8 +47,8 @@ public class PairServiceImpl implements PairService{
         return null;
     }
 
-    public Double calculateBMIResult(CharacterModel model){
-        return (double) valueOf(model.getMass()) / Math.pow(Double.valueOf(model.getHeight()) / 100, 2);
+    public Double calculateBMI(CharacterModel model){
+        return Double.valueOf(model.getMass()) / Math.pow(Double.valueOf(model.getHeight()) / 100, 2);
     }
 
     public UUID createPair(CharacterModel characterModel1, CharacterModel characterModel2) {
@@ -48,15 +56,15 @@ public class PairServiceImpl implements PairService{
         ResultPairModel ResultPairModel = getResultFromDB(characterModel1, characterModel2);
 
         if (ResultPairModel != null) {
-            System.out.println("CALCULATION RESULT FROM DB");
+            log.info("CALCULATION RESULT FROM DB");
             return ResultPairModel.getUuid();
         }
 
         double BMIPerson1;
         double BMIPerson2;
         try {
-            BMIPerson1 = calculateBMIResult(characterModel1);
-            BMIPerson2 = calculateBMIResult(characterModel2);
+            BMIPerson1 = calculateBMI(characterModel1);
+            BMIPerson2 = calculateBMI(characterModel2);
         } catch (NumberFormatException e) {
             throw new UnknownPeronBodyParametersException();
         }
@@ -71,8 +79,8 @@ public class PairServiceImpl implements PairService{
                 characterModel2.getHeight(),
                 BMIPerson2);
 
-        bmiResultModelRepository.save(ResultPairModel);
-        System.out.println("CALCULATED RESULT NOT FROM DB, JUST SAVED");
+        resultPairModelRepository.save(ResultPairModel);
+        log.info("CALCULATED RESULT NOT FROM DB, JUST SAVED");
         return ResultPairModel.getUuid();
     }
 
@@ -80,7 +88,7 @@ public class PairServiceImpl implements PairService{
 
         ResultPairModel ResultPairModel;
         try {
-            ResultPairModel = bmiResultModelRepository.findById(uuid).get();
+            ResultPairModel = resultPairModelRepository.findById(uuid).get();
         } catch (NoSuchElementException e) {
             throw new NoSuchUUIDException();
         }
@@ -95,7 +103,7 @@ public class PairServiceImpl implements PairService{
                         ResultPairModel.getHeightPerson1() +
                         " and BMI " +
                         ResultPairModel.getBMIPerson1() +
-                        " is " +
+                        " result: " +
                         bmiUtil.calculateBmiResult(ResultPairModel.getBMIPerson1())
         );
         resultResponseWire.setSecondPersonData(
@@ -106,12 +114,17 @@ public class PairServiceImpl implements PairService{
                         ResultPairModel.getHeightPerson2() +
                         " and BMI " +
                         ResultPairModel.getBMIPerson2() +
-                        " is " +
+                        " result: " +
                         bmiUtil.calculateBmiResult(ResultPairModel.getBMIPerson2())
         );
 
         resultResponseWire.setBmi(bmiUtil.compareBmiResults(ResultPairModel));
 
         return resultResponseWire;
+    }
+
+    public PaginationWire getAllResults(Pageable pageable) {
+        List<ResultPairModel> allByName = resultPairModelRepository.findAllResultPair(pageable);
+        return PaginationUtil.getPaginationResult(allByName,pageable,this.pageURl);
     }
 }

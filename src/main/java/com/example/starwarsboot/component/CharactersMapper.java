@@ -1,6 +1,6 @@
 package com.example.starwarsboot.component;
 
-import com.example.starwarsboot.Service.SWAPIServiceImpl;
+import com.example.starwarsboot.service.SWAPIServiceImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;

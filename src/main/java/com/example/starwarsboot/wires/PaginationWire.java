@@ -17,5 +17,5 @@ public class PaginationWire {
 
     private String next;
 
-    private List<CharacterModel> characterModels;
+    private List<?> result;
 }

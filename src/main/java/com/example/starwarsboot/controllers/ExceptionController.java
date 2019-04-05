@@ -1,7 +1,6 @@
 package com.example.starwarsboot.controllers;
 
 import com.example.starwarsboot.exceptions.NoSuchUUIDException;
-import com.example.starwarsboot.exceptions.QuarryingDatabaseException;
 import com.example.starwarsboot.exceptions.QuarryingSourcesException;
 import com.example.starwarsboot.exceptions.UnknownPeronBodyParametersException;
 import com.example.starwarsboot.wires.ExceptionResponseWire;
@@ -21,13 +20,6 @@ public class ExceptionController {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(new ExceptionResponseWire(HttpStatus.NOT_FOUND.toString(),e.getMessage()));
-    }
-
-    @ExceptionHandler(QuarryingDatabaseException.class)
-    public ResponseEntity recordNotFoundException(QuarryingDatabaseException e) {
-        return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .body(new ExceptionResponseWire(HttpStatus.BAD_REQUEST.toString(),e.getMessage()));
     }
 
     @ExceptionHandler(ConstraintViolationException.class)

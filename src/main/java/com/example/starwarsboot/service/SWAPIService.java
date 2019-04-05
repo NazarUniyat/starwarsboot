@@ -1,4 +1,4 @@
-package com.example.starwarsboot.Service;
+package com.example.starwarsboot.service;
 
 import com.example.starwarsboot.domains.CharacterModel;
 

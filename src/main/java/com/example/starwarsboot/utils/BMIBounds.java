@@ -1,6 +1,6 @@
-package com.example.starwarsboot.Utils;
+package com.example.starwarsboot.utils;
 
-public final class BMILevelsBounds {
+public final class BMIBounds {
     static final double LESS_THEN_NORMAL = 18.5;
     static final double PERFECT_LOWER_LIMIT = 18.5;
     static final double PERFECT_UPPER_LIMIT = 24.9;

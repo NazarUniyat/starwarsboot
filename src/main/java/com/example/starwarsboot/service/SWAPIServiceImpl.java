@@ -1,11 +1,9 @@
-package com.example.starwarsboot.Service;
+package com.example.starwarsboot.service;
 
-import com.example.starwarsboot.component.CharactersMapper;
 import com.example.starwarsboot.domains.CharacterModel;
 import com.example.starwarsboot.exceptions.QuarryingSourcesException;
 import com.example.starwarsboot.wires.AllPersonsWire;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.benmanes.caffeine.cache.Cache;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;

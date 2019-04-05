@@ -1,10 +1,9 @@
 package com.example.starwarsboot.domains;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+
 import javax.persistence.*;
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity
@@ -12,6 +11,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Getter
 @Setter
+@ToString
 public class ResultPairModel {
 
     @Id
@@ -43,5 +43,26 @@ public class ResultPairModel {
         this.weightPerson2 = weightPerson2;
         this.heightPerson2 = heightPerson2;
         this.BMIPerson2 = BMIPerson2;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ResultPairModel that = (ResultPairModel) o;
+        return Objects.equals(uuid, that.uuid) &&
+                Objects.equals(person1, that.person1) &&
+                Objects.equals(weightPerson1, that.weightPerson1) &&
+                Objects.equals(heightPerson1, that.heightPerson1) &&
+                Objects.equals(BMIPerson1, that.BMIPerson1) &&
+                Objects.equals(person2, that.person2) &&
+                Objects.equals(weightPerson2, that.weightPerson2) &&
+                Objects.equals(heightPerson2, that.heightPerson2) &&
+                Objects.equals(BMIPerson2, that.BMIPerson2);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(uuid, person1, weightPerson1, heightPerson1, BMIPerson1, person2, weightPerson2, heightPerson2, BMIPerson2);
     }
 }
