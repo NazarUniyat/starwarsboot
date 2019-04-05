@@ -1,6 +1,5 @@
 package com.example.starwarsboot.repository;
 
-import com.example.starwarsboot.domains.CharacterModel;
 import com.example.starwarsboot.domains.ResultPairModel;
 import com.example.starwarsboot.testData.TestData;
 import org.junit.Test;

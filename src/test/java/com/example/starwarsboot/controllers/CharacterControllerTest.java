@@ -6,10 +6,8 @@ import com.example.starwarsboot.repository.CharacterModelRepository;
 import com.example.starwarsboot.repository.ResultPairModelRepository;
 import com.example.starwarsboot.testData.TestData;
 import com.example.starwarsboot.component.CharactersMapper;
-import com.example.starwarsboot.domains.CharacterModel;
 import com.example.starwarsboot.service.CharacterServiceImpl;
 import com.example.starwarsboot.service.SWAPIServiceImpl;
-import com.github.benmanes.caffeine.cache.Cache;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +16,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.List;
 

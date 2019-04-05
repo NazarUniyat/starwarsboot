@@ -1,9 +1,7 @@
 package com.example.starwarsboot.wires;
 
-import com.example.starwarsboot.component.CharactersMapper;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 import java.util.TreeMap;

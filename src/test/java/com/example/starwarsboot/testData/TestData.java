@@ -3,7 +3,6 @@ package com.example.starwarsboot.testData;
 import com.example.starwarsboot.domains.CharacterModel;
 import com.example.starwarsboot.domains.ResultPairModel;
 
-import java.awt.*;
 import java.util.*;
 import java.util.List;
 
