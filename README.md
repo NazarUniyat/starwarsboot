@@ -23,7 +23,7 @@ https://github.com/NazarUniyat/starwarsboot.git
 
 ### Configuration
 
-In application.properties file you should change application host for pagination 
+In `application.properties` file you should change application host for pagination 
 
 ```
 characters.pagination.link=http://{app.host}/characters?page=
@@ -41,14 +41,14 @@ After configuration you should run all tests
 mvn test
 ```
 
-### Build an executable WAR
+### Build an executable JAR
 
 You can run the application from the command line using:
 
 ```
 mvn spring-boot:run
 ```
-Or you can build a single executable WAR file that contains all the necessary dependencies, classes, and resources with:
+Or you can build a single executable JAR file that contains all the necessary dependencies, classes, and resources with:
 ```
 mvn clean package
 ```
