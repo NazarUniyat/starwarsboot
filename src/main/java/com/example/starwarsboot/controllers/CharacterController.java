@@ -2,9 +2,6 @@ package com.example.starwarsboot.controllers;
 
 import com.example.starwarsboot.service.PairServiceImpl;
 import com.example.starwarsboot.service.CharacterServiceImpl;
-import com.example.starwarsboot.component.CharactersMapper;
-import com.example.starwarsboot.repository.ResultPairModelRepository;
-import com.example.starwarsboot.repository.CharacterModelRepository;
 import com.example.starwarsboot.wires.HelloMappingWire;
 import com.example.starwarsboot.wires.PaginationWire;
 import com.example.starwarsboot.wires.ResultResponseWire;
@@ -25,18 +22,12 @@ import java.util.UUID;
 @Validated
 public class CharacterController {
 
-    private CharacterModelRepository characterModelRepository;
-    private ResultPairModelRepository ResultPairModelRepository;
     private CharacterServiceImpl characterServiceImpl;
-    private CharactersMapper charactersMappers;
     private PairServiceImpl pairServiceImpl;
 
     @Autowired
-    public CharacterController(CharacterModelRepository characterModelRepository, com.example.starwarsboot.repository.ResultPairModelRepository ResultPairModelRepository, CharacterServiceImpl characterServiceImpl, CharactersMapper charactersMappers, PairServiceImpl pairServiceImpl) {
-        this.characterModelRepository = characterModelRepository;
-        this.ResultPairModelRepository = ResultPairModelRepository;
+    public CharacterController(CharacterServiceImpl characterServiceImpl, PairServiceImpl pairServiceImpl) {
         this.characterServiceImpl = characterServiceImpl;
-        this.charactersMappers = charactersMappers;
         this.pairServiceImpl = pairServiceImpl;
     }
 
